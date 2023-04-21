@@ -1,5 +1,6 @@
 package ru.gontar.cyberstore.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,12 +15,15 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column
-    private int user_id;
-    @Column
-    private String order_status;
-    @Column
-    private String method_of_payment;
-    @Column
-    private Date order_date;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    @JsonIgnore
+    private User user;
+    @Column(name = "order_status")
+    private String orderStatus;
+    @Column(name = "method_of_payment")
+    private String methodOfPayment;
+    @Column(name = "order_date")
+    @OrderBy
+    private Date orderDate;
 }

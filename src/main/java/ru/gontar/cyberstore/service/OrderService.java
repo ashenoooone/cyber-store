@@ -2,17 +2,16 @@ package ru.gontar.cyberstore.service;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.gontar.cyberstore.entity.Order;
-import ru.gontar.cyberstore.repositories.OrdersRepository;
+import ru.gontar.cyberstore.repositories.OrderRepository;
 
 import java.util.List;
 
 @Service
 @AllArgsConstructor
-public class OrdersService {
-    private OrdersRepository repository;
+public class OrderService {
+    private OrderRepository repository;
 
     @Transactional
     public List<Order> getAllOrders() {
@@ -21,12 +20,12 @@ public class OrdersService {
 
     @Transactional
     public Order createOrder(Order order) {
-        order.setOrder_status("поступил");
+        order.setOrderStatus("поступил");
         return repository.save(order);
     }
 
     @Transactional
     public List<Order> getAllOrdersSortedByDate() {
-        return repository.findAll(Sort.by(Sort.Direction.ASC, "order_date"));
+        return repository.findByOrderByOrderDateAsc();
     }
 }

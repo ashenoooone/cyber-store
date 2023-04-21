@@ -16,7 +16,7 @@ import java.util.List;
 public class ReportService {
     //    запись продуктов в файл csv
     private ProductService productService;
-    private OrdersService ordersService;
+    private OrderService ordersService;
 
     public ByteArrayOutputStream generateProductsCsvReport() throws IOException {
         List<Product> products = productService.getAllProducts();
@@ -40,18 +40,18 @@ public class ReportService {
     }
 
     public ByteArrayOutputStream generateOrdersCsvReport() throws IOException {
-        List<Order> products = ordersService.getAllOrders();
+        List<Order> products = ordersService.getAllOrdersSortedByDate();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         CSVWriter csvWriter = new CSVWriter(new OutputStreamWriter(outputStream), ';', CSVWriter.DEFAULT_QUOTE_CHARACTER,
                 CSVWriter.DEFAULT_ESCAPE_CHARACTER, CSVWriter.RFC4180_LINE_END);
-        csvWriter.writeNext(new String[]{"id", "user_id", "date", "method_of_payment"});
+        csvWriter.writeNext(new String[]{"id", "username", "date", "method_of_payment", "status"});
         for (Order order : products) {
             csvWriter.writeNext(new String[]{
                     String.valueOf(order.getId()),
-                    String.valueOf(order.getUser_id()),
-                    String.valueOf(order.getOrder_date()),
-                    String.valueOf(order.getMethod_of_payment()),
-                    order.getOrder_status()
+                    String.valueOf(order.getUser().getUsername()),
+                    String.valueOf(order.getOrderDate()),
+                    String.valueOf(order.getMethodOfPayment()),
+                    order.getOrderStatus()
             });
         }
 
