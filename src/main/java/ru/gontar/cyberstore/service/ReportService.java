@@ -17,6 +17,7 @@ public class ReportService {
     //    запись продуктов в файл csv
     private ProductService productService;
     private OrderService ordersService;
+//    fixme для реализации фасада сделать чтобы вызывались все заказы и все например продукты, тогда будет фасад
 
     public ByteArrayOutputStream generateProductsCsvReport() throws IOException {
         List<Product> products = productService.getAllProducts();

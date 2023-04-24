@@ -8,12 +8,9 @@ import org.springframework.web.bind.annotation.*;
 import ru.gontar.cyberstore.entity.Product;
 import ru.gontar.cyberstore.interfaces.SortProductsStrategy;
 import ru.gontar.cyberstore.service.ProductService;
-import ru.gontar.cyberstore.utils.products.strategies.sort.ProductSorter;
 import ru.gontar.cyberstore.utils.products.strategies.sort.SortByCategoryIdProductsStrategy;
 import ru.gontar.cyberstore.utils.products.strategies.sort.SortByPriceProductsStrategy;
 import ru.gontar.cyberstore.utils.products.strategies.sort.SortByQuantityProductsStrategy;
-
-import java.util.List;
 
 /**
  * Этот класс является реализацией паттерна "Фасад".
@@ -58,23 +55,20 @@ public class ProductController {
             // Если фильтр не указан, возвращаем список продуктов без сортировки
             return new ResponseEntity<>(service.getAllProducts(), HttpStatus.OK);
         } else if (filter.equals("price")) {
-            strategy = new SortByPriceProductsStrategy();
+            return new ResponseEntity<>(service
+                    .getAllProductsSortedByStrategy(new SortByPriceProductsStrategy()),
+                    HttpStatus.OK);
         } else if (filter.equals("quantity")) {
-            strategy = new SortByQuantityProductsStrategy();
+            return new ResponseEntity<>(service
+                    .getAllProductsSortedByStrategy(new SortByQuantityProductsStrategy()),
+                    HttpStatus.OK);
         } else if (filter.equals("category")) {
-            strategy = new SortByCategoryIdProductsStrategy();
+            return new ResponseEntity<>(service
+                    .getAllProductsSortedByStrategy(new SortByCategoryIdProductsStrategy()),
+                    HttpStatus.OK);
         } else {
             // Если указанный фильтр не соответствует доступным вариантам, возвращаем ошибку
             return ResponseEntity.badRequest().build();
         }
-
-        // Создание объекта сортировщика продуктов с переданной стратегией сортировки
-        ProductSorter sorter = new ProductSorter(strategy);
-
-        // Сортировка списка продуктов с помощью сортировщика
-        List<Product> productList = sorter.sort(service.getAllProducts());
-
-        // Возвращаем отсортированный список продуктов
-        return new ResponseEntity<>(productList, HttpStatus.OK);
     }
 }

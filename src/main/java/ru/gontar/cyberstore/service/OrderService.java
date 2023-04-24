@@ -28,4 +28,10 @@ public class OrderService {
     public List<Order> getAllOrdersSortedByDate() {
         return repository.findByOrderByOrderDateAsc();
     }
+
+    public Order updateOrderStatus(Long id, String status) {
+        Order ord = repository.findOrderById(id);
+        ord.setOrderStatus(status);
+        return ord;
+    }
 }

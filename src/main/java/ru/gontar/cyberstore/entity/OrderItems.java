@@ -1,6 +1,7 @@
 package ru.gontar.cyberstore.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,6 +9,7 @@ import lombok.Setter;
 @Table(name = "order_items")
 @Setter
 @Getter
+@AllArgsConstructor
 public class OrderItems {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

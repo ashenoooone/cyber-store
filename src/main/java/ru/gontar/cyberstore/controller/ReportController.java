@@ -17,6 +17,9 @@ import java.io.IOException;
 @RequestMapping("/reports")
 @AllArgsConstructor
 public class ReportController {
+//    fixme нужны не сырые данные ( более на бизнес упор )
+//     ( напр. соклько денег на айфонах и на самуснгах ) реализовать напр через квери
+//     ( брать стоимости, колчиество и даты )
 
     private ReportService reportService;
 

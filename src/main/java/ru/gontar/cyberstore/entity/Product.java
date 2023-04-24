@@ -17,16 +17,16 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column(name = "productName")
+    @Column(name = "product_name")
     private String productName;
-    @Column(name = "productDescription")
+    @Column(name = "product_description")
     private String productDescription;
-    @Column(name = "categoryId")
+    @Column(name = "category_id")
     private int categoryId;
     @Column(name = "price")
     private float price;
     @Column(name = "quantity")
     private int quantity;
-    @Column(name = "imageUrl")
+    @Column(name = "image_url")
     private String imageUrl;
 }

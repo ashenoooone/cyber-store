@@ -13,10 +13,6 @@ import ru.gontar.cyberstore.repositories.ProductsRepository;
  * конструктор напрямую.
  * Вместо этого мы создаем фабрику (ProductFactory) и вызываем ее методы для создания новых объектов
  * Product.
- * При этом в фабрике могут быть скрыты сложности создания объекта.
- * необходимых ресурсов и т.д. Таким образом, паттерн Фабрика облегчает создание объектов,
- * улучшает читаемость и
- * поддерживаемость кода и позволяет скрыть реализацию создания объекта от клиента.
  */
 @AllArgsConstructor
 @Component("productFactory")
@@ -27,14 +23,15 @@ public class ProductFactory {
     public Product createProduct(int productId, String productName, String productDescription,
                                  int categoryId, float price, int quantityInStock, String imageUrl) {
         Product product = new Product(productId, productName, productDescription, categoryId, price, quantityInStock, imageUrl);
-
         // Сохраняем объект продукта в базе данных
         repository.save(product);
-
         return product;
     }
 
     public Product createProduct(Product product) {
+        if (product.getProductName() == null
+                || product.getPrice() == 0
+                || product.getPrice() < 0) throw new IllegalArgumentException("Неверные значения полей");
         repository.save(product);
         return product;
     }

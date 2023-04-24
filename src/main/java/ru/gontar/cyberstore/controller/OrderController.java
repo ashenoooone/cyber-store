@@ -24,4 +24,13 @@ public class OrderController {
         Order savedOrder = ordersService.createOrder(order);
         return new ResponseEntity<>(savedOrder, HttpStatus.OK);
     }
+
+    @PutMapping("/")
+    private ResponseEntity<?> updateOrderStatus(@RequestParam(name = "id")
+                                                Long id,
+                                                @RequestParam(name = "status")
+                                                String status) {
+        Order updatedOrder = ordersService.updateOrderStatus(id, status);
+        return new ResponseEntity<>(updatedOrder, HttpStatus.OK);
+    }
 }
