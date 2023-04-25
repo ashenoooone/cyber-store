@@ -15,7 +15,7 @@ import ru.gontar.cyberstore.repositories.ProductsRepository;
  * Product.
  */
 @AllArgsConstructor
-@Component("productFactory")
+@Component
 public class ProductFactory {
     private ProductsRepository repository; // репозиторий для сохранения в базе данных
 
