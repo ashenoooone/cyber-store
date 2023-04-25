@@ -27,7 +27,7 @@ public class OrderController {
 
     @PutMapping("/")
     private ResponseEntity<?> updateOrderStatus(@RequestParam(name = "id")
-                                                Long id,
+                                                int id,
                                                 @RequestParam(name = "status")
                                                 String status) {
         Order updatedOrder = ordersService.updateOrderStatus(id, status);

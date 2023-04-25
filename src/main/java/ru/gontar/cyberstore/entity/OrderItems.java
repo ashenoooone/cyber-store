@@ -3,6 +3,7 @@ package ru.gontar.cyberstore.entity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
@@ -10,10 +11,11 @@ import lombok.Setter;
 @Setter
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class OrderItems {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
     @Column(name = "product_id")
     private int product_id;
     @Column(name = "price")

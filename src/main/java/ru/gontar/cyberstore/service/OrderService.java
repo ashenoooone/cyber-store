@@ -29,7 +29,7 @@ public class OrderService {
         return repository.findByOrderByOrderDateAsc();
     }
 
-    public Order updateOrderStatus(Long id, String status) {
+    public Order updateOrderStatus(int id, String status) {
         Order ord = repository.findOrderById(id);
         ord.setOrderStatus(status);
         return ord;
