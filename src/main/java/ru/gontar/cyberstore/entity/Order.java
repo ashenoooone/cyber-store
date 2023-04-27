@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "orders")
@@ -23,6 +24,8 @@ public class Order {
     @JoinColumn(name = "user_id")
     @JsonIgnore
     private User user;
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
+    private List<OrderItems> orderItems;
     @Column(name = "order_status")
     private String orderStatus;
     @Column(name = "method_of_payment")

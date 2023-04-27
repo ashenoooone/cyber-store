@@ -32,6 +32,7 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
     implementation group: 'com.opencsv', name: 'opencsv', version: '5.7.1'
     testImplementation "org.mockito:mockito-core:3.+"
+    implementation 'org.json:json:20210307'
 }
 
 tasks.named('test') {

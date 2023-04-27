@@ -2,12 +2,16 @@ package ru.gontar.cyberstore.service;
 
 import com.opencsv.CSVWriter;
 import lombok.AllArgsConstructor;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 import ru.gontar.cyberstore.entity.*;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -58,25 +62,45 @@ public class ReportService {
         return outputStream;
     }
 
-    public ByteArrayOutputStream generateProductsCsvReport() throws IOException {
+    public void generateProductOrderItemsJsonReport() throws IOException {
+        JSONObject object = new JSONObject();
+        object.put("type", "Отчет по заказам продуктов");
+        object.put("date", new Date());
+
         List<Product> products = productService.getAllProducts();
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        CSVWriter csvWriter = new CSVWriter(new OutputStreamWriter(outputStream), ';', CSVWriter.DEFAULT_QUOTE_CHARACTER,
-                CSVWriter.DEFAULT_ESCAPE_CHARACTER, CSVWriter.RFC4180_LINE_END);
-        csvWriter.writeNext(new String[]{"categoryId", "imageUrl", "price", "productDescription", "productName", "quantity"});
-        for (Product product : products) {
-            csvWriter.writeNext(new String[]{
-                    String.valueOf(product.getCategory().getId()),
-                    product.getImageUrl(),
-                    String.valueOf(product.getPrice()),
-                    product.getProductDescription(),
-                    product.getProductName(),
-                    String.valueOf(product.getQuantity())
-            });
+        for (Product p :
+                products) {
+            JSONArray pArray = new JSONArray();
+            for (OrderItems oi :
+                    p.getOrderItems()) {
+                JSONObject jsonOI = new JSONObject();
+                JSONObject customerIO = new JSONObject();
+                customerIO.put("username", oi.getOrder().getUser().getUsername());
+                customerIO.put("email", oi.getOrder().getUser().getEmail());
+                customerIO.put("lastLogin", oi.getOrder().getUser().getLastLoginDate());
+                jsonOI.put("date", oi.getOrder().getOrderDate());
+                jsonOI.put("customer", customerIO);
+                jsonOI.put("quantity", oi.getQuantity());
+                jsonOI.put("price", oi.getPrice());
+                pArray.put(jsonOI);
+            }
+            object.put("orderItems", pArray);
         }
 
-        csvWriter.close();
-        return outputStream;
+        FileWriter file = new FileWriter("C:\\projects\\cyber-store\\src\\main\\java\\ru\\gontar\\cyberstore\\controller\\order_items.json");
+        try {
+            file.write(object.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                file.flush();
+                file.close();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
     }
 
     public ByteArrayOutputStream generateOrdersCsvReport() throws IOException {
