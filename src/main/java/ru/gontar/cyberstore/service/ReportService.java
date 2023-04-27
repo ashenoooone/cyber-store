@@ -20,9 +20,7 @@ public class ReportService {
 //    fixme для реализации фасада сделать чтобы вызывались все заказы и все например продукты, тогда будет фасад
 
 
-    public ByteArrayOutputStream generateProductReportByCategoryAndBrand() throws IOException {
-        List<Category> categories = categoriesService.getAllCategories();
-        List<Brand> brands = brandService.getAllBrands();
+    public ByteArrayOutputStream generateProductReportByCategoryAndBrand(List<Category> categories, List<Brand> brands) throws IOException {
         if (categories.size() == 0) throw new RuntimeException("Категорий нет");
         if (brands.size() == 0) throw new RuntimeException("Брендов нет");
         int sum;

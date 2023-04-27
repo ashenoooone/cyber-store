@@ -6,4 +6,6 @@ import ru.gontar.cyberstore.entity.Category;
 public interface CategoriesRepository extends JpaRepository<Category, Integer> {
     Category findCategoryById(int id);
 
+    Category findCategoryByName(String name);
+
 }

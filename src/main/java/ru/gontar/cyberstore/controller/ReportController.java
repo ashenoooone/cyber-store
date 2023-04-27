@@ -7,11 +7,17 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import ru.gontar.cyberstore.entity.Brand;
+import ru.gontar.cyberstore.entity.Category;
+import ru.gontar.cyberstore.service.BrandService;
+import ru.gontar.cyberstore.service.CategoriesService;
 import ru.gontar.cyberstore.service.ReportService;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/reports")
@@ -22,12 +28,32 @@ public class ReportController {
 //     ( брать стоимости, колчиество и даты )
 
     private ReportService reportService;
+    private CategoriesService categoriesService;
+    private BrandService brandService;
 
     @GetMapping("/products")
-    public ResponseEntity<?> generateProductsReport() throws IOException {
-        ByteArrayOutputStream outputStream = reportService.generateProductReportByCategoryAndBrand();
+//    fixme отрефакторить код
+    public ResponseEntity<?> generateProductsReport(@RequestParam(name = "category", required = false) String category,
+                                                    @RequestParam(name = "brand", required = false) String brand) throws IOException {
+        ByteArrayOutputStream outputStream;
+        if (category != null && brand == null) {
+            Category cat = categoriesService.getCategoryByName(category);
+            outputStream = reportService
+                    .generateProductReportByCategoryAndBrand(List.of(cat), brandService.getAllBrands());
+        } else if (category == null && brand != null) {
+            Brand brn = brandService.getBrandByName(brand);
+            outputStream = reportService
+                    .generateProductReportByCategoryAndBrand(categoriesService.getAllCategories(), List.of(brn));
+        } else if (category != null && brand != null) {
+            Category cat = categoriesService.getCategoryByName(category);
+            Brand brn = brandService.getBrandByName(brand);
+            outputStream = reportService
+                    .generateProductReportByCategoryAndBrand(List.of(cat), List.of(brn));
+        } else {
+            outputStream = reportService
+                    .generateProductReportByCategoryAndBrand(categoriesService.getAllCategories(), brandService.getAllBrands());
+        }
         byte[] reportBytes = outputStream.toByteArray();
-
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.parseMediaType("text/csv"));
         headers.setContentDispositionFormData("attachment", "products.csv");

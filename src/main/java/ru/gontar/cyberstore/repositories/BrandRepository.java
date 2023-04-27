@@ -5,4 +5,6 @@ import ru.gontar.cyberstore.entity.Brand;
 
 public interface BrandRepository extends JpaRepository<Brand, Integer> {
     Brand findBrandById(int id);
+
+    Brand findBrandByName(String name);
 }

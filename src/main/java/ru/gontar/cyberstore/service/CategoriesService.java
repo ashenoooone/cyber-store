@@ -20,4 +20,8 @@ public class CategoriesService {
     public List<Category> getAllCategories() {
         return categoriesRepository.findAll();
     }
+
+    public Category getCategoryByName(String name) {
+        return categoriesRepository.findCategoryByName(name);
+    }
 }
