@@ -5,8 +5,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.gontar.cyberstore.dto.product.CreateProductRequest;
 import ru.gontar.cyberstore.entity.Product;
-import ru.gontar.cyberstore.interfaces.SortProductsStrategy;
 import ru.gontar.cyberstore.service.ProductService;
 import ru.gontar.cyberstore.utils.products.strategies.sort.SortByCategoryIdProductsStrategy;
 import ru.gontar.cyberstore.utils.products.strategies.sort.SortByPriceProductsStrategy;
@@ -33,8 +33,8 @@ public class ProductController {
 
     @PostMapping("/")
     @Transactional
-    public ResponseEntity<Product> createProduct(@RequestBody Product product) {
-        Product savedProduct = service.saveProduct(product);
+    public ResponseEntity<Product> createProduct(@RequestBody CreateProductRequest request) {
+        Product savedProduct = service.saveProduct(request);
         return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
     }
 
@@ -48,9 +48,6 @@ public class ProductController {
     @GetMapping("/")
     @Transactional
     public ResponseEntity<?> getProduct(@RequestParam(value = "filter", required = false) String filter) {
-
-        // Создание объекта стратегии сортировки в зависимости от переданного фильтра
-        SortProductsStrategy strategy;
         if (filter == null) {
             // Если фильтр не указан, возвращаем список продуктов без сортировки
             return new ResponseEntity<>(service.getAllProducts(), HttpStatus.OK);

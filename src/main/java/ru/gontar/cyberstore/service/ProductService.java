@@ -2,6 +2,9 @@ package ru.gontar.cyberstore.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.gontar.cyberstore.dto.product.CreateProductRequest;
+import ru.gontar.cyberstore.entity.Brand;
+import ru.gontar.cyberstore.entity.Category;
 import ru.gontar.cyberstore.entity.Product;
 import ru.gontar.cyberstore.interfaces.SortProductsStrategy;
 import ru.gontar.cyberstore.repositories.ProductsRepository;
@@ -17,8 +20,8 @@ public class ProductService {
 
     private ProductsRepository repository;
 
-    public Product saveProduct(Product product) {
-        return factory.createProduct(product);
+    public Product saveProduct(CreateProductRequest request) {
+        return factory.createProduct(request);
     }
 
     public List<Product> getAllProducts() {
@@ -30,4 +33,8 @@ public class ProductService {
         return sorter.sort(this.getAllProducts());
     }
 
+    public List<Product> getProductsByCategoryAndBrand(Category category, Brand brand) {
+        List<Product> products = repository.findProductsByCategoryAndBrand(category, brand);
+        return products;
+    }
 }

@@ -25,7 +25,7 @@ public class ReportController {
 
     @GetMapping("/products")
     public ResponseEntity<?> generateProductsReport() throws IOException {
-        ByteArrayOutputStream outputStream = reportService.generateProductsCsvReport();
+        ByteArrayOutputStream outputStream = reportService.generateProductReportByCategoryAndBrand();
         byte[] reportBytes = outputStream.toByteArray();
 
         HttpHeaders headers = new HttpHeaders();

@@ -3,8 +3,7 @@ package ru.gontar.cyberstore.service;
 import com.opencsv.CSVWriter;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.gontar.cyberstore.entity.Order;
-import ru.gontar.cyberstore.entity.Product;
+import ru.gontar.cyberstore.entity.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -14,10 +13,52 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class ReportService {
-    //    запись продуктов в файл csv
     private ProductService productService;
     private OrderService ordersService;
+    private BrandService brandService;
+    private CategoriesService categoriesService;
 //    fixme для реализации фасада сделать чтобы вызывались все заказы и все например продукты, тогда будет фасад
+
+
+    public ByteArrayOutputStream generateProductReportByCategoryAndBrand() throws IOException {
+        List<Category> categories = categoriesService.getAllCategories();
+        List<Brand> brands = brandService.getAllBrands();
+        if (categories.size() == 0) throw new RuntimeException("Категорий нет");
+        if (brands.size() == 0) throw new RuntimeException("Брендов нет");
+        int sum;
+        int count;
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        CSVWriter csvWriter = new CSVWriter(new OutputStreamWriter(outputStream), ';', CSVWriter.DEFAULT_QUOTE_CHARACTER,
+                CSVWriter.DEFAULT_ESCAPE_CHARACTER, CSVWriter.RFC4180_LINE_END);
+        for (Category category :
+                categories) {
+            csvWriter.writeNext(new String[]{"#", "#", "#", category.getName(), "#", "#", "#"});
+
+            for (Brand brand :
+                    brands) {
+                List<Product> products = productService.getProductsByCategoryAndBrand(category, brand);
+                sum = 0;
+                count = 0;
+                for (Product product :
+                        products) {
+                    List<OrderItems> orderItems = product.getOrderItems();
+                    for (OrderItems orderItem :
+                            orderItems) {
+                        sum += orderItem.getPrice();
+                        count += orderItem.getQuantity();
+                    }
+                }
+                csvWriter.writeNext(new String[]{"#", brand.getName(),
+                        "income:", sum + "$",
+                        "sold:", count + " pieces", "#"});
+            }
+            csvWriter.writeNext(new String[]{"#", "#", "#", "#", "#", "#", "#"});
+        }
+
+
+        csvWriter.close();
+        return outputStream;
+    }
 
     public ByteArrayOutputStream generateProductsCsvReport() throws IOException {
         List<Product> products = productService.getAllProducts();
@@ -27,7 +68,7 @@ public class ReportService {
         csvWriter.writeNext(new String[]{"categoryId", "imageUrl", "price", "productDescription", "productName", "quantity"});
         for (Product product : products) {
             csvWriter.writeNext(new String[]{
-                    String.valueOf(product.getCategoryId()),
+                    String.valueOf(product.getCategory().getId()),
                     product.getImageUrl(),
                     String.valueOf(product.getPrice()),
                     product.getProductDescription(),
