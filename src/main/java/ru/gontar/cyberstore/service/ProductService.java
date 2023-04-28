@@ -28,6 +28,10 @@ public class ProductService {
         return repository.findAll();
     }
 
+    public Product getProductById(int id) {
+        return repository.findProductsById(id);
+    }
+
     public List<Product> getAllProductsSortedByStrategy(SortProductsStrategy strategy) {
         ProductSorter sorter = new ProductSorter(strategy);
         return sorter.sort(this.getAllProducts());
@@ -37,4 +41,6 @@ public class ProductService {
         List<Product> products = repository.findProductsByCategoryAndBrand(category, brand);
         return products;
     }
+
+
 }

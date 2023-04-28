@@ -6,7 +6,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import ru.gontar.cyberstore.entity.Brand;
 import ru.gontar.cyberstore.entity.Category;
 import ru.gontar.cyberstore.service.BrandService;
@@ -17,6 +20,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -74,9 +78,12 @@ public class ReportController {
     }
 
     @GetMapping(value = "/orders_items", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public ResponseEntity<?> generateOrdersItemsReport() throws IOException {
-        reportService.generateProductOrderItemsJsonReport();
+    public ResponseEntity<?> generateOrdersItemsReport(
+            @RequestParam(name = "from", required = false) Date from,
+            @RequestParam(name = "to", required = false) Date to,
+            @RequestParam(name = "product_id", required = false) Integer id
+    ) throws IOException {
+        reportService.generateProductOrderItemsJsonReport(from, to, id);
         String jsonString = new String(Files.readAllBytes(Paths.get("C:\\projects\\cyber-store\\src\\main\\java\\ru\\gontar\\cyberstore\\controller\\order_items.json")));
         JSONObject jsonObject = new JSONObject(jsonString);
         return new ResponseEntity<>(jsonObject.toString(), HttpStatus.OK);

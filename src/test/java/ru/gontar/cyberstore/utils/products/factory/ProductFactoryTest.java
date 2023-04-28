@@ -35,26 +35,26 @@ class ProductFactoryTest {
 
     @Test
     void createProduct() {
-//        given
+        //        given
         Product product = new Product();
         product.setProductName("Iphone");
         product.setPrice(1000);
         product.setQuantity(1);
-//        when
+        //        when
         productFactory.createProduct(product);
-//        then
+        //        then
         verify(productsRepository, times(1)).save(product);
     }
 
     @Test()
     void createProductThrowsIllegalArgumentException() throws IllegalAccessError {
-//        given
+        //        given
         Product product = new Product();
-//        when
+        //        when
         IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
             productFactory.createProduct(product);
         });
-//        then
+        //        then
         Assertions.assertEquals("Неверные значения полей", exception.getMessage());
     }
 }

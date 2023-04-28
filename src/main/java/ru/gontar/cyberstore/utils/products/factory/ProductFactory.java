@@ -45,6 +45,9 @@ public class ProductFactory {
     }
 
     public Product createProduct(Product product) {
+        if (product.getProductName() == null || product.getProductName().isEmpty() ||
+                product.getPrice() <= 0)
+            throw new IllegalArgumentException("Неверные значения полей");
         return repository.save(product);
     }
 }

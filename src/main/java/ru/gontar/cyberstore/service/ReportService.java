@@ -20,6 +20,7 @@ public class ReportService {
     private ProductService productService;
     private OrderService ordersService;
     private BrandService brandService;
+    private OrderItemsService orderItemsService;
     private CategoriesService categoriesService;
 //    fixme для реализации фасада сделать чтобы вызывались все заказы и все например продукты, тогда будет фасад
 
@@ -62,17 +63,30 @@ public class ReportService {
         return outputStream;
     }
 
-    public void generateProductOrderItemsJsonReport() throws IOException {
+    public void generateProductOrderItemsJsonReport(Date from, Date to, Integer id) throws IOException {
         JSONObject object = new JSONObject();
+//        fixme добавить квери
         object.put("type", "Отчет по заказам продуктов");
         object.put("date", new Date());
-
-        List<Product> products = productService.getAllProducts();
+        JSONObject requestParams = new JSONObject();
+        List<Product> products;
+        if (id == null) {
+            products = productService.getAllProducts();
+        } else {
+            products = List.of(productService.getProductById(id));
+        }
+        System.out.println(products.size());
         for (Product p :
                 products) {
             JSONArray pArray = new JSONArray();
+            List<OrderItems> orderItems;
+            if (from != null && to != null) {
+                orderItems = orderItemsService.getAllOrderItemsByDateBetweenAndProductId(from, to, p.getId());
+            } else {
+                orderItems = p.getOrderItems();
+            }
             for (OrderItems oi :
-                    p.getOrderItems()) {
+                    orderItems) {
                 JSONObject jsonOI = new JSONObject();
                 JSONObject customerIO = new JSONObject();
                 customerIO.put("username", oi.getOrder().getUser().getUsername());
@@ -84,7 +98,7 @@ public class ReportService {
                 jsonOI.put("price", oi.getPrice());
                 pArray.put(jsonOI);
             }
-            object.put("orderItems", pArray);
+            object.put(p.getProductName(), pArray);
         }
 
         FileWriter file = new FileWriter("C:\\projects\\cyber-store\\src\\main\\java\\ru\\gontar\\cyberstore\\controller\\order_items.json");

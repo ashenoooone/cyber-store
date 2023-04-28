@@ -21,10 +21,14 @@ class OrderRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private OrderItemsRepository orderItemsRepository;
 
     @BeforeEach
     public void clearDatabase() {
+        orderItemsRepository.deleteAll();
         orderRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test
@@ -69,13 +73,13 @@ class OrderRepositoryTest {
 
     @Test
     void insertTest() {
-//        given
+        //        given
         Order order = new Order();
         order.setOrderDate(new Date());
         orderRepository.save(order);
-//        when
+        //        when
         List<Order> orders = orderRepository.findAll();
-//        then
+        //        then
         Assertions.assertNotNull(orders);
         Assertions.assertEquals(order.getOrderDate(), orders.get(0).getOrderDate());
     }
@@ -89,10 +93,10 @@ class OrderRepositoryTest {
         Order order2 = new Order();
         order2.setOrderDate(new Date());
         orderRepository.save(order2);
-//        when
+        //        when
         orderRepository.delete(order1);
         List<Order> orders = orderRepository.findAll();
-//        then
+        //        then
         Assertions.assertNotNull(orders);
         Assertions.assertEquals(order2.getOrderDate(), orders.get(0).getOrderDate());
         Assertions.assertEquals(1, orders.size());
